@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Profile Page</title>
+</head>
+<body>
+	<header>
+	<button onclick='window.location.href="/logout"'>log out</button>
+	</header>
+	<h1>
+			{{g.user.username}}'s Profile
+	</h1>
+	<div class="message_section">
+	{% if g.user.messages %}
+		<ul>
+		{% for message in g.user.messages %}
+		<li>The message " <span class="data_in_message">{{ message.content }}</span>" was sent at " <span class="data_in_message">{{ message.time }}</span>" by "
+			{% if message.sender == g.user %}
+				<span class="data_in_message"> you </span>"
+			{% else %}
+				<span class="data_in_message"> {{ message.sender.username }} </span>"
+			{% endif %} to "
+			{% if message.reciptinent == g.user %}
+				<span class="data_in_message"> you </span>
+			{% else %}
+				<span class="data_in_message"> {{ message.reciptinent.username }} </span>
+			{% endif %}
+		"</li>
+		{% endfor %}
+		</ul>
+	{% else %}
+		<p>sorry you don't have any message</p>
+	{% endif %}
+		<div id="send">
+			<h2>From here you can send a message to any one who uses Waslah</h2>
+			<form action="/sendmessage" method="POST">
+					{% if users %}
+					<select name="reciptinent">
+						{% for some in users %}
+							<option value="{{ some.username }}"> {{ some.username }} </option>
+						{% endfor %}
+						</select><br><br>
+						<input type="text" name="content"><br><br>
+						<input type="submit" value="Send!">
+					{% endif %}
+			</form>
+		</div>
+	</div>
+</body>
+</html>
