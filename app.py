@@ -130,7 +130,6 @@ def sendmessage() :
 				break
 		content = request.form['content']
 		g.user.send_messege(other_part, content)
-		print("message sent")
 		other_part.notifications.append(notification(time=datetime.now(), content="you have got a message", id=g.user.username+"!@!"+str(len(other_part.notifications))+"!@!"+other_part.username, type="message"))
 	return redirect(url_for("profile"))
 
@@ -145,7 +144,6 @@ def sendrequest() :
 		if person.username == other_person :
 			other_person = person
 			break
-	print(other_person)
 	other_person.notifications.append(notification(time=datetime.now(), content=g.user.username+" sent a friend request to you", id=g.user.username+"!@!"+str(len(other_person.notifications))+"!@!"+other_person.username, type="new friend"))
 	return redirect(url_for("profile"))
 
