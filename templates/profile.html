@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Profile Page</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='Style.css') }}">
+	<script src="{{ url_for('static', filename='Script.js') }}"></script>
+</head>
+<body><div id="loading"></div><div id="content">
+	<button onclick=window.location.href='{{ url_for("logout") }}';>log out</button>
+	<h1>
+			{{g.user.username}}'s Profile
+	</h1>
+	<div style="float: left;">{% if g.user.messages %}
+		<ul>
+		{% for message in g.user.messages %}
+		<li>The message " <span>{{ message.content }}</span>" was sent at " <span>{{ message.time }}</span>" by "
+			{% if message.sender == g.user %}
+				<span> you </span>"
+			{% else %}
+				<span> {{ message.sender.username }} </span>"
+			{% endif %} to "
+			{% if message.reciptinent == g.user %}
+				<span> you </span>
+			{% else %}
+				<span> {{ message.reciptinent.username }} </span>
+			{% endif %}
+		"</li>
+		{% endfor %}
+		</ul>
+	{% else %}
+		<p>sorry you don't have any message</p>
+	{% endif %}</div>
+	<div style="display: flex;">
+		{% if g.user.notifications %}
+			<ul>
+				{% for notification in g.user.notifications %}
+					{% if notification.type == "message" %}
+						<li><span>{{ notification.content }} at {{ notification.time }}</span> <a href="/done/okay!@!{{ notification.id }}"> ok! </a>
+					{% elif notification.type == "new friend" %}
+						<li><span>{{ notification.content }} at {{ notification.time }}</span> <a href="/done/yes!@!{{ notification.id }}"> accept! </a>
+							<a href="/done/no!@!{{ notification.id }}"> cancel! </a></li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		{% endif %}
+	</div>
+		<h2>From here you can send a message to any one of your friends</h2>
+		<h3><span>{% if not friends %}Don't have any friend {% endif %} </span>Send a friend request now</h3>
+		<form action="/sendrequest" method="POST">
+			<input name="maybe" type="text" list="friendrequests">
+			<datalist id="friendrequests">
+				{% for user in users %}
+					<option value="{{user.username}}"> {{ user.username }} </option>
+				{% endfor %}
+			</datalist>
+			<input type="submit" value="Ask to be friends" onclick="loading()">
+		</form>
+		<form action="/sendmessage" method="POST">
+			{% if g.user.friends %}
+			<select name="reciptinent">
+				{% for some in g.user.friends %}
+					<option value="{{ some.username }}"> {{ some.username }} </option>
+				{% endfor %}
+				</select><br><br>
+				<input type="text" name="content"><br><br>
+				<input type="submit" value="Send!" onclick="loading()">
+			{% endif %}
+		</form>
+</div></body>
+</html>
